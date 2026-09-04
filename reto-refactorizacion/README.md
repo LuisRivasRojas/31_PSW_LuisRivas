@@ -89,6 +89,10 @@ BUILD SUCCESS
 | Classes | 100% |
 
 ---
+## Reporte generado - index.html
+<img width="1917" height="562" alt="image" src="https://github.com/user-attachments/assets/7d9f5ea1-89b9-4cf8-b701-f4cc46203872" />
+
+
 
 ## Regla Fundamental del Reto
 
@@ -111,7 +115,7 @@ La suite incluye 4 tests que validan el comportamiento completo de `PedidoServic
 
 ---
 
-## Autor
+## Autor - Luis Rivas
 
 Desarrollado como parte del **Reto de Refactorización**  
 Curso: Pruebas de Software  
