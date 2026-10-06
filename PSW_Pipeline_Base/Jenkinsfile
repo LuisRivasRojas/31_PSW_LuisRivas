@@ -1,0 +1,68 @@
+pipeline {
+    agent any
+
+    environment {
+        SONAR_PROJECT_KEY = 'psw-pipeline-base'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo 'Obteniendo el código fuente del repositorio...'
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Compilando el proyecto con Maven...'
+                dir('PSW_Pipeline_Base') {
+                    bat 'mvn clean package -DskipTests'
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Ejecutando análisis de calidad con SonarQube...'
+                dir('PSW_Pipeline_Base') {
+                    withSonarQubeEnv('SonarQube') {
+                        bat 'mvn sonar:sonar -Dsonar.projectKey=%SONAR_PROJECT_KEY%'
+                    }
+                }
+            }
+        }
+
+        stage('JMeter Tests') {
+            steps {
+                echo 'Ejecutando pruebas de carga con JMeter...'
+                bat 'jmeter -n -t PSW_Pipeline_Base/jmeter/plan-de-pruebas.jmx -l PSW_Pipeline_Base/jmeter/resultados.jtl -e -o PSW_Pipeline_Base/jmeter/reporte'
+            }
+        }
+
+        stage('Notificacion') {
+            steps {
+                echo 'Pipeline ejecutado correctamente.'
+            }
+        }
+
+    }
+
+    post {
+        success {
+            slackSend(
+                channel: '#pipeline-notificaciones',
+                color: 'good',
+                message: "✅ *BUILD EXITOSO* \nJob: ${env.JOB_NAME} \nBuild: #${env.BUILD_NUMBER} \nTodas las etapas completaron sin errores."
+            )
+        }
+        failure {
+            slackSend(
+                channel: '#pipeline-notificaciones',
+                color: 'danger',
+                message: "❌ *BUILD FALLIDO* \nJob: ${env.JOB_NAME} \nBuild: #${env.BUILD_NUMBER} \nRevisa los logs en: ${env.BUILD_URL}"
+            )
+        }
+    }
+}
