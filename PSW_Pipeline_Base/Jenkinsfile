@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SONAR_PROJECT_KEY = 'psw-pipeline-base'
+        SONAR_TOKEN = credentials('sonarcloud-token')
     }
 
     stages {
@@ -25,11 +25,9 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                echo 'Ejecutando análisis de calidad con SonarQube...'
+                echo 'Ejecutando análisis de calidad con SonarCloud...'
                 dir('PSW_Pipeline_Base') {
-                    withSonarQubeEnv('SonarQube') {
-                        bat 'mvn sonar:sonar -Dsonar.projectKey=%SONAR_PROJECT_KEY%'
-                    }
+                    bat 'mvn verify sonar:sonar -Dsonar.token=%SONAR_TOKEN%'
                 }
             }
         }

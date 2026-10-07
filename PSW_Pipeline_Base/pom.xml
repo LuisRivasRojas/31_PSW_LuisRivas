@@ -22,6 +22,9 @@
 
     <properties>
         <java.version>17</java.version>
+        <sonar.projectKey>LuisRivasRojas_31_PSW_LuisRivas</sonar.projectKey>
+        <sonar.organization>luisrivasrojas</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencies>
